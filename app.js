@@ -5,8 +5,6 @@ import cors from 'cors';
 import 'dotenv/config';
 import AppError from './utils/appError.js';
 import userRouter from './router/user-routes.js';
-import propertyRouter from './router/property-routes.js';
-import bookingRouter from './router/booking-routes.js';
 
 const app = express();
 
