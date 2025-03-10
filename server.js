@@ -1,5 +1,3 @@
-// const config = require('./config/config');
-
 process.on('uncaughtException', (err) => {
   console.error(err.name, err.message);
   console.log('Unhandled exception, shutting down.........');
