@@ -31,6 +31,6 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
             sudo docker pull peldrige/easy-go:latest
-            sudo docker stop easy-go || true
-            sudo docker rm easy-go || true
-            sudo docker run -d --name easy-go -p 2000:2000 peldrige/easy-go:latest
+            sudo docker stop easy-go || true        
+            sudo docker-compose up -d --force-recreate  
+            sudo docker system prune -f
