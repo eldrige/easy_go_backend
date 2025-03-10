@@ -6,7 +6,9 @@
   "scripts": {
     "start": "nodemon server.js",
     "dev": "NODE_ENV=development nodemon server.js",
-    "prod": "NODE_ENV=production nodemon server.js"
+    "prod": "NODE_ENV=production nodemon server.js",
+    "docker-start": "docker compose up",
+    "doc": "docker run -p 2000:2000 easy-g"
   },
   "type": "module",
   "keywords": [],
