@@ -1,0 +1,35 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: peldrige/easy-go:latest
+
+      - name: Deploy to web-01
+        uses: appleboy/ssh-action@v0.1.9
+        with:
+          host: ${{ secrets.AWS_EC2_IP_ADDRESS }}
+          username: ${{ secrets.AWS_HOST_USER }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            sudo docker pull peldrige/easy-go:latest
+            sudo docker stop easy-go || true
+            sudo docker rm easy-go || true
+            sudo docker run -d --name easy-go -p 80:80 peldrige/easy-go:latest
