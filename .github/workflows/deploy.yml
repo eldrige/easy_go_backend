@@ -20,6 +20,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: peldrige/easy-go:latest
 
       - name: Deploy to web-01
