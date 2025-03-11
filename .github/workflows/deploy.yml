@@ -14,8 +14,10 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
@@ -23,7 +25,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: peldrige/easy-go:latest
 
-      - name: Deploy to web-01
+      - name: Deploy to AWS EC2
         uses: appleboy/ssh-action@v0.1.9
         with:
           host: ${{ secrets.AWS_EC2_IP_ADDRESS }}
@@ -31,6 +33,15 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
             sudo docker pull peldrige/easy-go:latest
-            sudo docker stop easy-go || true        
-            sudo docker-compose up -d --force-recreate  
+            sudo docker-compose down
+            sudo docker-compose up -d --force-recreate
             sudo docker system prune -f
+            echo "Checking if easy-go is running..."
+            sleep 5
+            if sudo docker ps --filter "name=easy-go" --filter "status=running" | grep easy-go; then
+              echo "✅ easy-go is running!"
+            else
+              echo "❌ easy-go failed to start!"
+              sudo docker logs easy-go
+              exit 1
+            fi
