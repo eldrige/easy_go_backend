@@ -25,23 +25,24 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: peldrige/easy-go:latest
 
-      - name: Deploy to AWS EC2
+      - name: Copy docker-compose.yml to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.AWS_EC2_IP_ADDRESS }}
+          username: ${{ secrets.AWS_HOST_USER }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          source: '../../docker-compose.yml'
+          target: '/home/ubuntu/'
+
+      - name: Deploy to web-01
         uses: appleboy/ssh-action@v0.1.9
         with:
           host: ${{ secrets.AWS_EC2_IP_ADDRESS }}
           username: ${{ secrets.AWS_HOST_USER }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-            sudo docker pull peldrige/easy-go:latest
+            cd /home/ubuntu
+            sudo docker-compose pull app
             sudo docker-compose down
             sudo docker-compose up -d --force-recreate
             sudo docker system prune -f
-            echo "Checking if easy-go is running..."
-            sleep 5
-            if sudo docker ps --filter "name=easy-go" --filter "status=running" | grep easy-go; then
-              echo "✅ easy-go is running!"
-            else
-              echo "❌ easy-go failed to start!"
-              sudo docker logs easy-go
-              exit 1
-            fi
