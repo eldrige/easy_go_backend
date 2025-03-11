@@ -38,21 +38,7 @@ jobs:
           username: ${{ secrets.AWS_HOST_USER }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-            cd app || exit 1
-            echo "Pulling latest image..."
-            if ! sudo docker pull peldrige/easy-go:latest; then
-              echo "Failed to pull image"
-              exit 1
-            fi
-            echo "Stopping current services..."
-            if ! sudo docker compose down; then
-              echo "Warning: Failed to bring services down cleanly"
-            fi
-            echo "Starting new services..."
-            if ! sudo docker compose up -d --force-recreate; then
-              echo "Failed to start services"
-              exit 1
-            fi
-            echo "Cleaning up unused resources..."
-            sudo docker system prune -f
-            echo "Deployment completed successfully"
+            cd app/easy_go_backend || exit 1
+            git pull origin main
+            docker-compose down
+            docker-compose up -d --build
