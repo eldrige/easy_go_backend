@@ -38,7 +38,7 @@ jobs:
           username: ${{ secrets.AWS_HOST_USER }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-            cd /app || exit 1
+            cd app || exit 1
             echo "Pulling latest image..."
             if ! sudo docker pull peldrige/easy-go:latest; then
               echo "Failed to pull image"
