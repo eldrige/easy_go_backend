@@ -42,7 +42,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
             cd /home/ubuntu
-            sudo docker-compose pull app
+            sudo docker pull peldrige/easy-go:latest
             sudo docker-compose down
             sudo docker-compose up -d --force-recreate
             sudo docker system prune -f
