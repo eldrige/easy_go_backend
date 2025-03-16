@@ -40,7 +40,6 @@ export const signUp = catchAsync(async (req, res, next) => {
       email,
       password: hashedPassword,
     },
-    omit: ['password'],
   });
   createSendToken(newUser, 201, res);
 });
@@ -55,7 +54,6 @@ export const login = catchAsync(async (req, res, next) => {
     where: {
       email,
     },
-    omit: ['password'],
   });
 
   if (!user) return next(new AppError('Invalid email or password', 401));
