@@ -5,6 +5,9 @@ import cors from 'cors';
 import 'dotenv/config';
 import AppError from './utils/appError.js';
 import userRouter from './router/user-routes.js';
+import busCompanyRouter from './router/bus-company-routes.js';
+import routeRouter from './router/route-routes.js';
+import scheduleRouter from './router/schedule-routes.js';
 
 const app = express();
 
@@ -13,11 +16,10 @@ app.use(express.json({}));
 app.use(morgan('dev'));
 
 app.use('/users', userRouter);
-// app.use('/properties', propertyRouter);
-// app.use('/bookings', bookingRouter);
+app.use('/bus-company/', busCompanyRouter);
+app.use('/route/', routeRouter);
+app.use('/schedule/', scheduleRouter);
 
-// app.use('/properties/', uploadRouter);
-// app.use('/bookings/', articleRouter);
 app.get('/', (req, res) => res.send('Welcome to EasyGo API'));
 
 app.all('*', (req, res, next) => {

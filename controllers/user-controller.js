@@ -22,6 +22,7 @@ export const getMe = catchAsync(async (req, res) => {
 });
 
 export const signUp = catchAsync(async (req, res, next) => {
+  console.log('We are here');
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
     return next(new AppError('Please provide all the required fields', 400));
@@ -39,6 +40,7 @@ export const signUp = catchAsync(async (req, res, next) => {
       email,
       password: hashedPassword,
     },
+    omit: ['password'],
   });
   createSendToken(newUser, 201, res);
 });
@@ -53,6 +55,7 @@ export const login = catchAsync(async (req, res, next) => {
     where: {
       email,
     },
+    omit: ['password'],
   });
 
   if (!user) return next(new AppError('Invalid email or password', 401));

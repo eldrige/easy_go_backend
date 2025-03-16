@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,10 +9,10 @@ datasource db {
 
 
 model User {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   email     String   @unique
-  name      String?
-  properties Property[]
+  name      String
+  phone    String?
   bookings   Booking[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -26,42 +20,56 @@ model User {
   password String
 }
 
-model Property {
-  id          String   @id @default(uuid())
-  title       String
-  description String
-  pricePerNight Float
-  location    String
-  host        User     @relation(fields: [hostId], references: [id])
-  hostId      String
+model BusCompany {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  phone    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  routes    Route[]
+}
+
+
+model Route {
+  id        String   @id @default(cuid())
+  bus_company_id     String
+  bus_company BusCompany @relation(fields: [bus_company_id], references: [id], onDelete: Cascade)
+  schedules Schedule[]
+  from      String
+  to        String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model Schedule {
+  id          String   @id @default(cuid())
+  route_id       String
+  route       Route @relation(fields: [route_id], references: [id])
+  departure_time DateTime @default(now())
+  available_seats Int
+  price           Float
   bookings    Booking[]
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  image       String @default("https://res.cloudinary.com/dav5lnlxj/image/upload/v1740180511/house-four_olhjhf.jpg")
 }
 
 model Booking {
-  id         String   @id @default(uuid())
-  renter     User     @relation(fields: [renterId], references: [id])
-  renterId   String
-  property   Property @relation(fields: [propertyId], references: [id])
-  propertyId String
-  checkIn    DateTime
-  checkOut   DateTime
+  id         String   @id @default(cuid())
+  user_id     String
+  user       User @relation(fields: [user_id], references: [id])
+  schedule_id String
+  schedule   Schedule @relation(fields: [schedule_id], references: [id])
   status     BookingStatus @default(PENDING)
-  createdAt  DateTime @default(now())
+  booking_date  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  amount    Float
 
-  @@unique([propertyId, checkIn, checkOut])
-}
-
-enum Role {
-  RENTER
-  HOST
+  @@index([user_id, booking_date])
+  @@unique([user_id, schedule_id])
 }
 
 enum BookingStatus {
-  IDLE
   PENDING
   CONFIRMED
   CANCELED
