@@ -1,9 +1,9 @@
 import express from 'express';
 import {
   createBooking,
-  updateBookingStatus,
-  getMyBookingsAsRenter,
-  getMyBookingsAsHost,
+  // updateBookingStatus,
+  getMyBookings,
+  getMyBookingByID,
 } from '../controllers/booking-controller.js';
 import {
   authenticateUser,
@@ -13,10 +13,11 @@ import {
 const router = express.Router();
 router.use(authenticateUser);
 
-router.get('/my-bookings', getMyBookingsAsRenter);
-router.get('/host-bookings', authorizeRole(['HOST']), getMyBookingsAsHost);
+router.get('/my-bookings', getMyBookings);
+// router.get('/host-bookings', authorizeRole(['HOST']), getMyBookingsAsHost);
+router.post('/:id', getMyBookingByID);
 
-router.post('/', authorizeRole(['RENTER']), createBooking);
-router.put('/:id/status', authorizeRole(['HOST']), updateBookingStatus);
+router.post('/', createBooking);
+// router.put('/:id/status', authorizeRole(['HOST']), updateBookingStatus);
 
 export default router;

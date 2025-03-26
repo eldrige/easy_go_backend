@@ -8,6 +8,7 @@ import userRouter from './router/user-routes.js';
 import busCompanyRouter from './router/bus-company-routes.js';
 import routeRouter from './router/route-routes.js';
 import scheduleRouter from './router/schedule-routes.js';
+import bookingRouter from './router/booking-routes.js';
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use('/users', userRouter);
 app.use('/bus-company/', busCompanyRouter);
 app.use('/route/', routeRouter);
 app.use('/schedule/', scheduleRouter);
+app.use('/booking/', bookingRouter);
 
 app.get('/', (req, res) => res.send('Welcome to EasyGo API'));
 
