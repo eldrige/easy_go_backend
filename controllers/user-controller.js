@@ -41,7 +41,8 @@ export const signUp = catchAsync(async (req, res, next) => {
       password: hashedPassword,
     },
   });
-  createSendToken(newUser, 201, res);
+  const { password: _, ...userWithoutPassword } = newUser;
+  createSendToken(userWithoutPassword, 201, res);
 });
 
 export const login = catchAsync(async (req, res, next) => {
@@ -58,6 +59,7 @@ export const login = catchAsync(async (req, res, next) => {
 
   if (!user) return next(new AppError('Invalid email or password', 401));
   const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return next(new AppError('Invalid email or password', 401));
-  createSendToken(user, 200, res);
+  if (!isMatch) throw new AppError('Invalid email or password', 401);
+  const { password: _, ...userWithoutPassword } = user;
+  createSendToken(userWithoutPassword, 200, res);
 });
