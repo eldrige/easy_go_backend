@@ -18,6 +18,8 @@ model User {
   updatedAt DateTime @updatedAt
   avatar   String?
   password String
+  is_admin  Boolean @default(false)
+
 }
 
 model BusCompany {
@@ -63,7 +65,6 @@ model Booking {
   status     BookingStatus @default(PENDING)
   booking_date  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  is_admin  Boolean @default(false)
 
   @@index([user_id, booking_date])
   @@unique([user_id, schedule_id])
